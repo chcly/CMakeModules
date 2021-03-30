@@ -18,6 +18,19 @@
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
 
+
+
+
+# emscripten_verbose() 
+#
+#   ==> <VerboseOutput>VerboseOutputMode</VerboseOutput>
+#
+macro(emscripten_verbose TargetName)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s VERBOSE=1")
+	set_target_properties(${TargetName} PROPERTIES VS_GLOBAL_VerboseOutput VerboseOutputMode)
+endmacro()
+
+
 # emscripten_web_gl_version(1 2) 
 #
 #   ==> <AdditionalOptions>$(AdditionalOptions) -s MIN_WEBGL_VERSION=1 -s MAX_WEBGL_VERSION=2"</AdditionalOptions>
