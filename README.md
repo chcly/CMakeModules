@@ -1,1 +1,3 @@
 # CMakeModules
+
+Miscellaneous CMake macros.
