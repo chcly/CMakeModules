@@ -76,3 +76,34 @@ endmacro()
 macro(enable_emscripten_wasm_executable TargetName)
 	set_target_properties(${TargetName} PROPERTIES SUFFIX .wasm)
 endmacro()
+
+
+
+
+macro(emscripten_copy_wasm_target TARNAME DESTDIR)
+
+    add_custom_command(TARGET ${TARNAME} 
+                       POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${TARNAME}> 
+                       "${DESTDIR}/$<TARGET_FILE_NAME:${TARNAME}>"
+                       )
+
+    add_custom_command(TARGET ${TARNAME} 
+                       POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:${TARNAME}>/${TARNAME}.wasm" 
+                       "${DESTDIR}/${TARNAME}.wasm"
+                       )
+
+    add_custom_command(TARGET ${TARNAME} 
+                       POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:${TARNAME}>/${TARNAME}.js" 
+                       "${DESTDIR}/${TARNAME}.js"
+                       )
+    set_target_properties(
+        ${TARNAME} 
+        PROPERTIES 
+        VS_DEBUGGER_WORKING_DIRECTORY  
+        "${DESTDIR}"
+    )
+
+endmacro(emscripten_copy_wasm_target)

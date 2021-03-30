@@ -17,24 +17,10 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
-set(VS_DIR "$ENV{VS2019INSTALLDIR}")
-find_path(VS_EMSCRIPTEN_PATH  NAMES VSEmscripten.cmake 
-    PATHS  "${VS_DIR}/MSBuild/Microsoft/VC/v160/Platforms/Emscripten/PlatformToolsets/emsdk/CMake/")
-
-if (VS_EMSCRIPTEN_PATH)
-
-    string(COMPARE EQUAL "${CMAKE_SYSTEM_NAME}"           "Emscripten" _SystemNameEmscripten)
-    string(COMPARE EQUAL "${CMAKE_VS_PLATFORM_TOOLSET}"   "emsdk"      _SystemToolsetEmscripten)
-
-    if(_SystemNameEmscripten OR _SystemToolsetEmscripten)
-        set(USING_EMSCRIPTEN TRUE)
-        include(VSEmscripten)
-    else()
-        set(USING_EMSCRIPTEN FALSE)
-    endif()
-
-    unset(_SystemNameEmscripten)
-    unset(_SystemToolsetEmscripten)
+if (CMAKE_COMPILER_IS_GNUCXX)
+    add_compile_options(-w)
 else()
-
+    if (MSVC)
+        add_compile_options(/W0)
+    endif()
 endif()
