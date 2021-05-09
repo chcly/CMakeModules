@@ -23,6 +23,11 @@ macro(set_static_runtime)
     endif(MSVC)
 endmacro(set_static_runtime)
 
+macro(set_static_runtime_cuda)
+    if(MSVC)
+		set(CMAKE_MSVC_RUNTIME_LIBRARY_DEFAULT "MultiThreadedDebug")
+    endif(MSVC)
+endmacro(set_static_runtime_cuda)
 
 macro(msvc_disable_crt_warnings)
     if(MSVC)
