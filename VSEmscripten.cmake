@@ -130,12 +130,14 @@ macro(emscripten_copy_wasm_target_wasm_js TARNAME DESTDIR)
                        POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:${TARNAME}>/${TARNAME}.wasm" 
                        "${DESTDIR}/${TARNAME}.wasm"
+                       COMMENT "${DESTDIR}/${TARNAME}.wasm"
                        )
 
     add_custom_command(TARGET ${TARNAME} 
                        POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE_DIR:${TARNAME}>/${TARNAME}.js" 
                        "${DESTDIR}/${TARNAME}.js"
+                       COMMENT "${DESTDIR}/${TARNAME}.js"
                        )
     set_target_properties(
         ${TARNAME} 
