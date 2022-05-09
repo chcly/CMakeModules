@@ -21,11 +21,9 @@
 find_package(Doxygen)
 find_package (Python COMPONENTS Interpreter)
 
-set(MdDoxBuilder_ProjectName    ${CMAKE_PROJECT_NAME}         CACHE STRING "")
-set(MdDoxBuilder_ProjecVersion  ${MdDox_PROJECT_VERSION}      CACHE STRING "")
-set(MdDoxBuilder_ProjecUrl      ${MdDox_PROJECT_HOMEPAGE_URL} CACHE STRING "")
-set(MdDoxBuilder_Brief          ${MdDox_PROJECT_DESCRIPTION}  CACHE STRING "")
-set(MdDoxBuilder_ALL     FALSE)
+set(MdDoxBuilder_ProjectVersion ${CMAKE_PROJECT_VERSION}      CACHE STRING "" FORCE)
+set(MdDoxBuilder_ProjectUrl     ${CMAKE_PROJECT_HOMEPAGE_URL} CACHE STRING "" FORCE)
+set(MdDoxBuilder_Brief          ${CMAKE_PROJECT_DESCRIPTION}  CACHE STRING "" FORCE)
 
 # function(MdDoxMakeQuotedStringList Output ARGN)
 macro(MdDoxMakeQuotedStringList Output)
@@ -41,7 +39,9 @@ macro(MdDoxMakeQuotedStringList Output)
 		endif()
 		set(First FALSE)
 	endforeach()
-	message(STATUS "${Output} = ${${Output}}")
+	if (NOT ${MdDoxBuilder_QUIET})
+		message(STATUS "${Output} = ${${Output}}")
+	endif()
 endmacro()
 
 # function(MdDoxMakeStringList Output ARGN)
@@ -57,14 +57,18 @@ macro(MdDoxMakeStringList Output)
 		endif()
 		set(First FALSE)
 	endforeach()
-	message(STATUS "${Output} = ${${Output}}")
+
+	if (NOT ${MdDoxBuilder_QUIET})
+		message(STATUS "${Output} = ${${Output}}")
+	endif()
 endmacro()
 
 
 # function(MdDox [<arg1> ...])
 function(MdDox ConfigIn ConfigOut)
+
 	if (DOXYGEN_FOUND)
-		set(TargetName "${MdDoxBuilder_ProjectName}DocumentationTarget")
+		set(TargetName "${CMAKE_PROJECT_NAME}.MdDox")
 
 		MdDoxMakeQuotedStringList(SourceLocation ${MdDoxBuilder_SourceLocation})
 		MdDoxMakeQuotedStringList(SourceExclude  ${MdDoxBuilder_SourceExclude})
@@ -72,22 +76,33 @@ function(MdDox ConfigIn ConfigOut)
 		MdDoxMakeQuotedStringList(ImagePaths     ${MdDoxBuilder_ImagePaths})
 		MdDoxMakeStringList(SymbolExclude        ${MdDoxBuilder_SymbolExclude})
 		
-		message(STATUS " ------ MdDox : ${TargetName} ------ ")
-		message(STATUS " ")
-		message(STATUS "Using Doxygen  : ${DOXYGEN_VERSION}")
-		message(STATUS "ProjectName    : ${MdDoxBuilder_ProjectName}")
-		message(STATUS "ProjectVersion : ${MdDoxBuilder_ProjecVersion}")
-		message(STATUS "Brief          : ${MdDoxBuilder_Brief}")
-		message(STATUS "SourceLocation : ${MdDoxBuilder_SourceLocation}")
-		message(STATUS "OutputDir      : ${MdDoxBuilder_OutputDir}")
-		message(STATUS "ExamplePaths   : ${MdDoxBuilder_ExamplePaths}")
-		message(STATUS "ImagePaths     : ${MdDoxBuilder_ImagePaths}")
-		message(STATUS "Dot Script     : ${MdDoxBuilder_InvokeDotScript}")
-		message(STATUS " ")
-		message(STATUS "ConfigIn       : ${ConfigIn} ")
-		message(STATUS "ConfigOut      : ${ConfigOut} ")
-		message(STATUS " ")
-		message(STATUS " ------ MdDox  ------ ")
+		if (NOT ${MdDoxBuilder_QUIET})
+			message(STATUS " ------ MdDox : ${TargetName} ------ ")
+			message(STATUS " ")
+			message(STATUS "Using Doxygen  : ${DOXYGEN_VERSION}")
+			message(STATUS "ProjectName    : ${MdDoxBuilder_ProjectName}")
+			message(STATUS "ProjectVersion : ${MdDoxBuilder_ProjectVersion}")
+			message(STATUS "Brief          : ${MdDoxBuilder_Brief}")
+			message(STATUS "SourceLocation : ${MdDoxBuilder_SourceLocation}")
+			message(STATUS "OutputDir      : ${MdDoxBuilder_OutputDir}")
+			message(STATUS "ExamplePaths   : ${MdDoxBuilder_ExamplePaths}")
+			message(STATUS "ImagePaths     : ${MdDoxBuilder_ImagePaths}")
+			message(STATUS "Dot Script     : ${MdDoxBuilder_InvokeDotScript}")
+			message(STATUS " ")
+			message(STATUS "ConfigIn       : ${ConfigIn} ")
+			message(STATUS "ConfigOut      : ${ConfigOut} ")
+			message(STATUS " ")
+			message(STATUS " ------ MdDox  ------ ")
+		endif()
+		
+
+		source_group("Doxygen" FILES ${ConfigIn} ${MdDoxBuilder_OutputDir}/Doxygen)
+		source_group("Doxygen\\CMake" FILES ${ConfigOut})
+
+		set (Scripts ${MdDoxBuilder_OutputDir}/build.py 
+				     ${MdDoxBuilder_OutputDir}/clean.py 
+					 ${CMAKE_SOURCE_DIR}/CMake/Modules/invokeDot.py)
+		source_group("Scripts" FILES ${Scripts})
 		
 		if (NOT EXISTS "${MdDoxBuilder_OutputDir}/images")
 			file(MAKE_DIRECTORY "${MdDoxBuilder_OutputDir}/images")
@@ -105,6 +120,7 @@ function(MdDox ConfigIn ConfigOut)
 		
 		file(GLOB PagesINL ${MdDoxBuilder_OutputDir}/pages/*.inl)
 		file(GLOB PagesH   ${MdDoxBuilder_OutputDir}/pages/*.h)
+
 		source_group("Pages" FILES ${PagesINL})
 		source_group("Pages" FILES ${PagesH})
 
@@ -113,7 +129,7 @@ function(MdDox ConfigIn ConfigOut)
 		if (EXISTS "${CMAKE_SOURCE_DIR}/README.md")
 			list(APPEND OutputMd "${CMAKE_SOURCE_DIR}/README.md")
 		endif()
-		source_group("Markdown" FILES ${OutputMd})
+		source_group("Output\\Markdown" FILES ${OutputMd})
 
 		set(TargetName_SRC
 			${ConfigIn} 
@@ -123,32 +139,33 @@ function(MdDox ConfigIn ConfigOut)
 			${OutputMd}
 			${MdDoxBuilder_Config}
 			${MdDoxBuilder_ExtraSource}
+			${Scripts}
 			${ARGN}
 		)
 		
 		if (EXISTS "${MdDoxBuilder_OutputDir}/html/index.html")
 			list(APPEND TargetName_SRC "${MdDoxBuilder_OutputDir}/html/index.html")
-			source_group("Html" FILES "${MdDoxBuilder_OutputDir}/html/index.html")
+			source_group("Output\\Html" FILES "${MdDoxBuilder_OutputDir}/html/index.html")
 		endif()
 
 		if (EXISTS "${MdDoxBuilder_OutputDir}/html/style.css")
 			list(APPEND TargetName_SRC "${MdDoxBuilder_OutputDir}/html/style.css")
-			source_group("Html" FILES "${MdDoxBuilder_OutputDir}/html/style.css")
+			source_group("Output\\Html" FILES "${MdDoxBuilder_OutputDir}/html/style.css")
 		endif()
 
 		if (EXISTS "${MdDoxBuilder_OutputDir}/html/light-style.css")
 			list(APPEND TargetName_SRC "${MdDoxBuilder_OutputDir}/html/light-style.css")
-			source_group("Html" FILES "${MdDoxBuilder_OutputDir}/html/light-style.css")
+			source_group("Output\\Html" FILES "${MdDoxBuilder_OutputDir}/html/light-style.css")
 		endif()
 
 		if (EXISTS "${MdDoxBuilder_OutputDir}/xml/compound.xsd")
 			list(APPEND TargetName_SRC "${MdDoxBuilder_OutputDir}/xml/compound.xsd")
-			source_group("Xml" FILES "${MdDoxBuilder_OutputDir}/xml/compound.xsd")
+			source_group("Output\\Xml" FILES "${MdDoxBuilder_OutputDir}/xml/compound.xsd")
 		endif()
 
 		if (EXISTS "${MdDoxBuilder_OutputDir}/Layout.xml")
 			list(APPEND TargetName_SRC "${MdDoxBuilder_OutputDir}/Layout.xml")
-			source_group("Xml" FILES "${MdDoxBuilder_OutputDir}/Layout.xml")
+			source_group("Output\\Xml" FILES "${MdDoxBuilder_OutputDir}/Layout.xml")
 		endif()
 
 		if (MdDoxBuilder_AutoBuild)
@@ -193,8 +210,7 @@ function(MdDox ConfigIn ConfigOut)
 			endforeach()
 		endif()
 
-		set_target_properties(${TargetName} PROPERTIES FOLDER "CMakePredefinedTargets/Document")
-		set_target_properties(${MdDox_Target} PROPERTIES FOLDER "CMakePredefinedTargets/Document")
+		set_target_properties(${TargetName} PROPERTIES FOLDER "${TargetGroup}")
 	endif()
 endfunction()
 
