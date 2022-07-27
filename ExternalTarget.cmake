@@ -28,6 +28,18 @@ macro(DefineExternalTarget NAME GROUP INCLUDE )
     set(${NAME}_FOLDER              ${GROUP})
     set(${NAME}_INCLUDE             ${INCLUDE})
     set(${NAME}_LIBRARY             ${${NAME}_TargetName})
+
+
+    if (ExternalTarget_LOG)
+        message(STATUS "")
+        message(STATUS "${NAME}_TargetFolders : ${${NAME}_TargetFolders}")
+        message(STATUS "${NAME}_TargetName    : ${${NAME}_TargetName}")
+        message(STATUS "${NAME}_TargetGroup   : ${${NAME}_TargetGroup}")
+        message(STATUS "${NAME}_FOLDER        : ${${NAME}_FOLDER}")
+        message(STATUS "${NAME}_INCLUDE       : ${${NAME}_INCLUDE}")
+        message(STATUS "${NAME}_LIBRARY       : ${${NAME}_LIBRARY}")
+        message(STATUS "")
+    endif()
 endmacro()
 
 
@@ -43,5 +55,22 @@ macro(DefineExternalTargetEx NAME GROUP INCLUDE_PATH SOURCE_DIR BLD_TEST RUN_TES
     set(${NAME}_LIBRARY             ${${NAME}_TargetName})
     set(${NAME}_BUILD_TEST          ${BLD_TEST})
     set(${NAME}_AUTO_RUN_TEST       ${RUN_TEST})
+
+    # For backwards compatibility with older scripts
     set(${NAME}_AUTO_RUN_TESTS      ${RUN_TEST})
+
+
+    if (ExternalTarget_LOG)
+        message(STATUS "")
+        message(STATUS "${NAME}_TargetFolders  : ${${NAME}_TargetFolders}")
+        message(STATUS "${NAME}_TargetName     : ${${NAME}_TargetName}")
+        message(STATUS "${NAME}_TargetGroup    : ${${NAME}_TargetGroup}")
+        message(STATUS "${NAME}_FOLDER         : ${${NAME}_FOLDER}")
+        message(STATUS "${NAME}_INCLUDE        : ${${NAME}_INCLUDE}")
+        message(STATUS "${NAME}_LIBRARY        : ${${NAME}_LIBRARY}")
+        message(STATUS "${NAME}_DIRECTORY      : ${${NAME}_DIRECTORY}")
+        message(STATUS "${NAME}_AUTO_RUN_TEST  : ${${NAME}_AUTO_RUN_TEST}")
+        message(STATUS "${NAME}_AUTO_RUN_TESTS : ${${NAME}_AUTO_RUN_TESTS}")
+        message(STATUS "")
+    endif()
 endmacro()
