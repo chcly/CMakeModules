@@ -29,10 +29,9 @@ macro(set_group ProjectFiles)
     foreach(PatternString ${ARGN})
         string(FIND       ${PatternString} ":" SplitIdx)
         string(LENGTH     ${PatternString}  Strlen)
-
+        math(EXPR SplitIdxN "${SplitIdx}+1")
         string(SUBSTRING  ${PatternString} 0 ${SplitIdx} Group)
-        string(SUBSTRING  ${PatternString} ${SplitIdx} ${Strlen} Pattern)
-        string(REPLACE    ":" "" Pattern ${Pattern})
+        string(SUBSTRING  ${PatternString} ${SplitIdxN} ${Strlen} Pattern)
 
         file(GLOB PatternFiles ${Pattern})
         if (PatternFiles)
