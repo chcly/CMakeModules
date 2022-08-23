@@ -26,6 +26,7 @@ macro(set_group ProjectFiles)
     # Source/Group/Name2:Path/To/*.Pattern2
     # ...
     set(Dest )
+
     foreach(PatternString ${ARGN})
         string(FIND       ${PatternString} ":" SplitIdx)
         string(LENGTH     ${PatternString}  Strlen)
@@ -42,6 +43,14 @@ macro(set_group ProjectFiles)
             list(APPEND Dest ${PatternFiles})
         endif()
     endforeach()
-    set(${ProjectFiles}  ${Dest}) 
+    set(${ProjectFiles} ${Dest} ) 
     unset(Dest)
+endmacro()
+
+macro(set_ro_group OutVAR)
+
+    set_group(${OutVAR} ${ARGN})
+    set_source_files_properties(${${OutVAR}} PROPERTIES VS_TOOL_OVERRIDE "None")
+    set_source_files_properties(${${OutVAR}} PROPERTIES HEADER_FILE_ONLY TRUE)
+
 endmacro()
