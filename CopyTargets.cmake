@@ -67,7 +67,7 @@ macro(copy_target TargetName Destination)
             ${TargetName} 
             PROPERTIES 
             VS_DEBUGGER_WORKING_DIRECTORY  
-           "${CMAKE_CURRENT_SOURCE_DIR}"
+           "${Destination}"
         )
     endif()
 
