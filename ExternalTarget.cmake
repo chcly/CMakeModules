@@ -43,6 +43,28 @@ macro(DefineExternalTarget NAME GROUP INCLUDE )
 endmacro()
 
 
+macro(DefineAlternateExternalTarget NAME TARNAME GROUP INCLUDE )
+    set(${NAME}_ExternalTarget      TRUE)
+    set(${NAME}_TargetFolders       TRUE)
+    set(${NAME}_TargetName          ${TARNAME})
+    set(${NAME}_TargetGroup         ${GROUP})
+    set(${NAME}_FOLDER              ${GROUP})
+    set(${NAME}_INCLUDE             ${INCLUDE})
+    set(${NAME}_LIBRARY             ${${NAME}_TargetName})
+
+
+    if (ExternalTarget_LOG)
+        message(STATUS "")
+        message(STATUS "${NAME}_TargetFolders : ${${NAME}_TargetFolders}")
+        message(STATUS "${NAME}_TargetName    : ${${NAME}_TargetName}")
+        message(STATUS "${NAME}_TargetGroup   : ${${NAME}_TargetGroup}")
+        message(STATUS "${NAME}_FOLDER        : ${${NAME}_FOLDER}")
+        message(STATUS "${NAME}_INCLUDE       : ${${NAME}_INCLUDE}")
+        message(STATUS "${NAME}_LIBRARY       : ${${NAME}_LIBRARY}")
+        message(STATUS "")
+    endif()
+endmacro()
+
 
 macro(DefineExternalTargetEx NAME GROUP INCLUDE_PATH SOURCE_DIR BLD_TEST RUN_TEST)
     set(${NAME}_ExternalTarget      TRUE)
