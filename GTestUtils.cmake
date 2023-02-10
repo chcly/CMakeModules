@@ -9,9 +9,9 @@ macro(configure_gtest SRC INC)
     set(GTEST_INCLUDE ${INC})
     set(GTEST_LIBRARY gtest_main)
 
-    message(STATUS "Using gtest source and include paths")
-    message(STATUS "GTEST_DIR      : ${SRC}")
-    message(STATUS "GTEST_INCLUDE  : ${INC}")
+    #message(STATUS "Using gtest source and include paths")
+    #message(STATUS "GTEST_DIR      : ${SRC}")
+    #message(STATUS "GTEST_INCLUDE  : ${INC}")
 endmacro(configure_gtest)
 
 
