@@ -9,21 +9,31 @@
 #
 # void runTest()
 # {
-#	const char *testFile = AbsTestFile("test.txt")
+#	const char *testFile = TestFile("test.txt")
 # }
 macro(gen_path_to_here)
-	if (NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/ThisDir.h.in")
+	#if ( NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/ThisDir.h.in")
 		file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/ThisDir.h.in"
-			"#pragma once\n#cmakedefine AbsDir \"@AbsDir@/\"\n"
-			"#define AbsTestFile(name) AbsDir name\n"
+			"#pragma once\n\n"
+			"#cmakedefine CurrentBuildDirectory \"@CurrentBuildDirectory@/\"\n"
+			"#cmakedefine CurrentSourceDirectory \"@CurrentSourceDirectory@/\"\n"
+			"#cmakedefine BuildDirectory \"@BuildDirectory@/\"\n"
+			"\n\n"
+			"#define TestFile(name) CurrentSourceDirectory name\n"
+			"#define OutputFile(name) CurrentBuildDirectory name\n"
+			"#define TargetFile(name) BuildDirectory name\n"
 		)
-	endif()
+	#endif()
 
-	set(AbsDir ${CMAKE_CURRENT_SOURCE_DIR})
+	set(CurrentSourceDirectory ${CMAKE_CURRENT_SOURCE_DIR})
+	set(CurrentBuildDirectory  ${CMAKE_CURRENT_BINARY_DIR})
+	set(BuildDirectory         ${CMAKE_BINARY_DIR})
 	configure_file(
 		${CMAKE_CURRENT_BINARY_DIR}/ThisDir.h.in
 		${CMAKE_CURRENT_BINARY_DIR}/ThisDir.h
 	)
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
-	unset(AbsDir)
+	unset(CurrentSourceDirectory )
+	unset(CurrentBuildDirectory  )
+	unset(BuildDirectory         )
 endmacro()
