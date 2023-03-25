@@ -57,7 +57,7 @@ function(compile_and_transfer RESULT TRANSFER_TO_DIR CSV)
                 DEPENDS ${OUTPUT_SRC}
 	        )
         endif()
-        set(TEMP_RES ${TRANSFR_SRC} ${TEMP_RES})
+        list(APPEND TEMP_RES ${TRANSFR_SRC})
     endforeach()
     set(${RESULT} ${TEMP_RES} PARENT_SCOPE)
 endfunction()
