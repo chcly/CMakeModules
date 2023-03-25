@@ -78,6 +78,14 @@ macro(DefineExternalTargetEx NAME GROUP INCLUDE_PATH SOURCE_DIR BLD_TEST RUN_TES
     set(${NAME}_BUILD_TEST          ${BLD_TEST})
     set(${NAME}_AUTO_RUN_TEST       ${RUN_TEST})
 
+
+    if (EXISTS ${SOURCE_DIR}/CMake/Globals.cmake)
+        if (ExternalTarget_LOG)
+            message(STATUS "${CMAKE_CURRENT_SOURCE_DIR} Using => ${SOURCE_DIR}/CMake/Globals.cmake")
+        endif()
+        include(${SOURCE_DIR}/CMake/Globals.cmake)
+    endif()
+
     # For backwards compatibility with older scripts
     set(${NAME}_AUTO_RUN_TESTS      ${RUN_TEST})
 
