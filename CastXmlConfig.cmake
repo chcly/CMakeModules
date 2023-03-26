@@ -27,6 +27,7 @@ endfunction()
 function(compile_and_transfer RESULT TRANSFER_TO_DIR CSV)
     set(TEMP_RES )
     foreach(SRC ${ARGN})
+        string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" SWAP ${SRC})
         get_filename_component(SRC_NAME ${SRC} NAME_WE)
         set(TRANSFR_SRC  "${TRANSFER_TO_DIR}/${SRC_NAME}.xml")
 
@@ -39,12 +40,13 @@ function(compile_and_transfer RESULT TRANSFER_TO_DIR CSV)
             add_custom_command(
 	            OUTPUT  ${OUTPUT_SRC}
 	            COMMENT "Compiling ${SRC_NAME}.xml"
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	            COMMAND ${CastXML_EXE} 
                         --castxml-start "${CSV}"
                         --castxml-output=${CastXML_VERSION} 
                         --castxml-cc-${CastXML_CC} ${CastXML_CC_TOOL}
                         -o ${OUTPUT_SRC} 
-                        "${SRC}"
+                        "${SWAP}"
                 DEPENDS ${SRC}
 	        )
 
