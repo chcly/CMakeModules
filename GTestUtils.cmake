@@ -32,18 +32,19 @@ endmacro(add_gtest_source)
 
 
 # =======================================
-# run_test - executes the supplied target after a succesfull build
+# run_test - executes the supplied target after a successful build
 
 macro(run_test TargetName)
-    add_custom_command(TARGET  ${TargetName} POST_BUILD
+    add_custom_command(
+        TARGET ${TargetName} POST_BUILD
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMAND  $<TARGET_FILE:${TargetName}>
     )
+
     set_target_properties(
         ${TargetName} 
         PROPERTIES 
-        VS_DEBUGGER_WORKING_DIRECTORY  
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endmacro(run_test)
 
