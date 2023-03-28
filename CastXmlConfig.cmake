@@ -24,7 +24,7 @@ function(extract_source OUT SRC_DIR)
     set(${OUT} ${SRC} PARENT_SCOPE)
 endfunction()
 
-function(compile_and_transfer RESULT TRANSFER_TO_DIR CSV)
+function(compile_and_transfer RESULT TRANSFER_TO_DIR CSV INCLUDE)
     set(TEMP_RES )
     foreach(SRC ${ARGN})
         string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/" "" SWAP ${SRC})
@@ -46,6 +46,8 @@ function(compile_and_transfer RESULT TRANSFER_TO_DIR CSV)
                         --castxml-output=${CastXML_VERSION} 
                         --castxml-cc-${CastXML_CC} ${CastXML_CC_TOOL}
                         -o ${OUTPUT_SRC} 
+                        -I ${INCLUDE}
+                        -Wc++17-extensions
                         "${SWAP}"
                 DEPENDS ${SRC}
 	        )
