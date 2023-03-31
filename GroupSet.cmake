@@ -149,7 +149,7 @@ function(glob_csv OUT PATTERN)
 endfunction()
 
 
-set(set_group_DEBUG TRUE)
+set(set_group_DEBUG FALSE)
 
 function(set_group ProjectFiles)
     # Format 
