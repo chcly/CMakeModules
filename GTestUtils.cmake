@@ -49,3 +49,17 @@ macro(run_test TargetName)
 endmacro(run_test)
 
 
+
+macro(run_test_indir TargetName CWD)
+    add_custom_command(
+        TARGET ${TargetName} POST_BUILD
+        WORKING_DIRECTORY ${CWD}
+        COMMAND  $<TARGET_FILE:${TargetName}>
+    )
+
+    set_target_properties(
+        ${TargetName} 
+        PROPERTIES 
+        VS_DEBUGGER_WORKING_DIRECTORY ${CWD}
+    )
+endmacro()
