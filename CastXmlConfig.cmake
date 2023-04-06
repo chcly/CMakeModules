@@ -114,13 +114,17 @@ endfunction()
 
 function(add_cast_xml RESULT)
 
-    set(TEMP_RES )
-    foreach(SRC ${ARGN})
-        invoke_cast_xml(OUT ${SRC})
-        list(APPEND TEMP_RES ${OUT})
-    endforeach()
+    if (CastXML_FOUND)
+        set(TEMP_RES )
 
-    set(${RESULT} ${TEMP_RES} PARENT_SCOPE)
+        foreach(SRC ${ARGN})
+            invoke_cast_xml(OUT ${SRC})
+            list(APPEND TEMP_RES ${OUT})
+        endforeach()
+
+        set(${RESULT} ${TEMP_RES} PARENT_SCOPE)
+    endif()
+
 endfunction()
 
 
