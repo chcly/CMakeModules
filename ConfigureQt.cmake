@@ -14,9 +14,49 @@ macro(configure_qt_windows)
 
     set(QtConfig_ROOT  
         "${QtConfig_HOME}\\${QtConfig_VERSION}\\${QtConfig_BUILD}" CACHE STRING 
-        "Read only variable that should form the full path to the Qt instalation" FORCE)
+        "Read only variable that should form the full path to the Qt installation" FORCE)
 
     set(CMAKE_PREFIX_PATH ${QtConfig_ROOT})
     find_package(Qt6 COMPONENTS 
         ${ARGN})
 endmacro()
+
+
+function(add_qt_test_file FileName TargetName AutoRun)
+    get_filename_component(V1 ${FileName} NAME_WE)
+
+    include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR} 
+        ${CMAKE_CURRENT_BINARY_DIR} 
+        )
+
+    add_executable(
+        ${TargetName} 
+        "${V1}.cpp" 
+        "${V1}.h"
+    )
+
+    target_link_libraries(
+        ${TargetName} 
+        Qt6::Widgets 
+        Qt6::Core 
+        Qt6::Gui 
+        Qt6::Test 
+        Qt::Platform
+    )
+
+    set_target_properties(
+        ${TargetName} 
+        PROPERTIES FOLDER "${TargetGroup}/Qt"
+        WIN32_EXECUTABLE   OFF
+    )
+    
+    if (AutoRun)
+        add_custom_command(
+            TARGET ${TargetName} POST_BUILD
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMAND  $<TARGET_FILE:${TargetName}>
+        )
+    endif()
+endfunction()
+
