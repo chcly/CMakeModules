@@ -2,7 +2,7 @@
 macro(configure_qt_windows)
     set(QtConfig_HOME 
         $ENV{Qt6} CACHE STRING  
-        "Should point to the Qt instaliation directory")
+        "Should point to the Qt installation directory")
 
     set(QtConfig_VERSION 
         "6.4.1" CACHE STRING  
