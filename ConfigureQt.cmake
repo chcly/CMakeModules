@@ -60,3 +60,17 @@ function(add_qt_test_file FileName TargetName AutoRun)
     endif()
 endfunction()
 
+
+
+
+
+function(copy_to_bin TargetName Bin)
+    
+    include(CopyTargets)
+    # Include any third party DLLs temporally 
+    # copied to the binary dir
+    file(GLOB ExtraDeps ${CMAKE_BINARY_DIR}/*.dll)
+
+    copy_target(${TargetName} ${Bin} ${ExtraDeps})
+
+endfunction()
