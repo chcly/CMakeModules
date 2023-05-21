@@ -65,12 +65,19 @@ endfunction()
 
 
 function(copy_to_bin TargetName Bin)
-    
+
     include(CopyTargets)
     # Include any third party DLLs temporally 
     # copied to the binary dir
     file(GLOB ExtraDeps ${CMAKE_BINARY_DIR}/*.dll)
 
     copy_target(${TargetName} ${Bin} ${ExtraDeps})
+
+    add_custom_command(
+        TARGET ${TargetName} POST_BUILD
+	    COMMENT "runing windeployqt -> ${TargetName}"
+        WORKING_DIRECTORY ${Bin}
+	    COMMAND Qt6::windeployqt  $<TARGET_FILE:${TargetName}>
+    )
 
 endfunction()
