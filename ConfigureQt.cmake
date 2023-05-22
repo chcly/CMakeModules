@@ -21,6 +21,12 @@ macro(configure_qt_windows)
         ${ARGN})
 endmacro()
 
+macro(configure_qt_linux)
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTORCC ON)
+
+    find_package(Qt6 COMPONENTS ${ARGN})
+endmacro()
 
 function(add_qt_test_file FileName TargetName AutoRun)
     get_filename_component(V1 ${FileName} NAME_WE)
@@ -73,11 +79,14 @@ function(copy_to_bin TargetName Bin)
 
     copy_target(${TargetName} ${Bin} ${ExtraDeps})
 
-    add_custom_command(
-        TARGET ${TargetName} POST_BUILD
-	    COMMENT "runing windeployqt -> ${TargetName}"
-        WORKING_DIRECTORY ${Bin}
-	    COMMAND Qt6::windeployqt  $<TARGET_FILE:${TargetName}>
-    )
+    if (WIN32)
+        add_custom_command(
+            TARGET ${TargetName} POST_BUILD
+            COMMENT "runing windeployqt -> ${TargetName}"
+            WORKING_DIRECTORY ${Bin}
+            COMMAND Qt6::windeployqt  $<TARGET_FILE:${TargetName}>
+        )
+    endif()
+
 
 endfunction()
