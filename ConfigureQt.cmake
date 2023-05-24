@@ -17,14 +17,15 @@ macro(configure_qt_windows)
         "Read only variable that should form the full path to the Qt installation" FORCE)
 
     set(CMAKE_PREFIX_PATH ${QtConfig_ROOT})
-    find_package(Qt6 COMPONENTS 
-        ${ARGN})
+    find_package(Qt6 COMPONENTS ${ARGN})
+
+    option(QtConfig_RUN_WIN_DEPLOY_QT "Run windeployqt when copying the executable to bin." OFF)
+
 endmacro()
 
 macro(configure_qt_linux)
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_AUTORCC ON)
-
     find_package(Qt6 COMPONENTS ${ARGN})
 endmacro()
 
@@ -66,10 +67,6 @@ function(add_qt_test_file FileName TargetName AutoRun)
     endif()
 endfunction()
 
-
-
-
-
 function(copy_to_bin TargetName Bin)
 
     include(CopyTargets)
@@ -79,14 +76,12 @@ function(copy_to_bin TargetName Bin)
 
     copy_target(${TargetName} ${Bin} ${ExtraDeps})
 
-    if (WIN32)
+    if (QtConfig_RUN_WIN_DEPLOY_QT)
         add_custom_command(
             TARGET ${TargetName} POST_BUILD
-            COMMENT "runing windeployqt -> ${TargetName}"
+            COMMENT "Running windeployqt: ${TargetName}"
             WORKING_DIRECTORY ${Bin}
             COMMAND Qt6::windeployqt  $<TARGET_FILE:${TargetName}>
         )
     endif()
-
-
 endfunction()
