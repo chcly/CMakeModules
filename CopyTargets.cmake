@@ -8,7 +8,7 @@ macro(copy_target TargetName Destination)
     
     add_custom_command(TARGET ${TargetName} 
                        POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${TargetName}> 
+                       COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${TargetName}> 
                        "${Destination}/$<TARGET_FILE_NAME:${TargetName}>"
                        COMMENT "Copy  ${Destination}/${TargetName}"
                        )
@@ -26,7 +26,7 @@ macro(copy_target TargetName Destination)
 
         add_custom_command(TARGET ${TargetName} 
                     POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy ${InputFileAbs} ${OutFile}
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${InputFileAbs} ${OutFile}
                     )
 
     endforeach()
