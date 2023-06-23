@@ -85,3 +85,28 @@ function(copy_to_bin TargetName Bin)
         )
     endif()
 endfunction()
+
+
+
+macro(qt_auto_resource TargetName)
+
+    set_property(
+        TARGET ${TargetName} 
+        PROPERTY AUTOMOC_SOURCE_GROUP "Content/Generated/Qt"
+    )
+    
+    set_property(
+        TARGET ${TargetName} 
+        PROPERTY AUTORCC_SOURCE_GROUP "Content/Generated/Qt"
+    )
+    
+    set_property(
+        TARGET ${TargetName} 
+        PROPERTY AUTOMOC ON
+    )
+    
+    set_property(
+        TARGET ${TargetName} 
+        PROPERTY AUTORCC ON
+    )
+endmacro()
